@@ -14,7 +14,7 @@ BALL_SPEED = -10
 
 
 # Goal dimensions
-GOAL_WIDTH = 200
+GOAL_WIDTH = 0
 GOAL_HEIGHT = 50
 GOAL_Y = 50  
 # Position of the goal from the top of the screen

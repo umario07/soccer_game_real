@@ -16,9 +16,8 @@ class Ball(pygame.sprite.Sprite):
         # Create a pygame circle that represents the ball's visual area
         # The surface dimensions are twice the BALL_RADIUS in both width and height
         self.image = pygame.Surface((BALL_RADIUS * 2, BALL_RADIUS * 2), pygame.SRCALPHA)
-        #pygame.srcalpha allows for transparency 
+        # pygame.SRCALPHA allows for transparency 
         # makes it so that anything behind the ball can still be shown 
-        
         
         pygame.draw.circle(self.image, WHITE, (BALL_RADIUS, BALL_RADIUS), BALL_RADIUS)
         # draws a white circle using the ball radius as a dimension 
@@ -55,7 +54,33 @@ class Ball(pygame.sprite.Sprite):
         self.speed = BALL_SPEED
         # this allows us to put a speed on the ball so that it can move 
 
-def draw_field():
+class Goalie(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        # Create an orange rectangle representing the goalie
+        self.image = pygame.Surface((40, GOAL_HEIGHT))  
+        self.image.fill((255, 165, 0))  # Fill with orange color
+        
+        # Position the goalie at the top of the screen, centered in the goal
+        goal_x = (SCREEN_WIDTH - GOAL_WIDTH) // 2
+        self.rect = self.image.get_rect(midtop=(SCREEN_WIDTH // 2, GOAL_Y))
+
+        # Set the speed of the goalie
+        self.speed = 3  # Adjust for smooth, consistent motion
+
+    def update(self):
+        # Move the goalie back and forth across the entire goal width
+        self.rect.x += self.speed
+        goal_left = (SCREEN_WIDTH - GOAL_WIDTH) // 2  # Left edge of the goal
+        goal_right = goal_left + GOAL_WIDTH - self.rect.width  # Right edge of the goal
+
+        # Reverse direction if the goalie hits the goal boundaries
+        if self.rect.left <= goal_left or self.rect.right >= goal_right:
+            self.speed = -self.speed
+
+
+# Define the draw_field function to render the field, goal, and lines
+def draw_field(screen):
     # Fill the screen with the field color (green background)
     screen.fill(GREEN)
 

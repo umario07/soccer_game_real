@@ -26,16 +26,21 @@ ball = Ball()
 # Adding the ball to the `all_sprites` group so we can control it with other sprites (will add goalie and player)
 all_sprites.add(ball)
 
+# Creating an instance of the Goalie class, which represents the moving goalie
+goalie = Goalie()  
+# Adding the goalie to the `all_sprites` group
+all_sprites.add(goalie)
+
 # Starting the main game loop so that everything on the screen continuously updates and responds to player input
 running = True  
 # keeps the loop going as long as it is true (it is)
 while running:
-    # Check for player input events, in this case we want to see whne they press the space bar or close the window
+    # Check for player input events, in this case we want to see when they press the space bar or close the window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  
             # If the player closes the game window then...
             pygame.quit() 
-             # ...quit the game
+            # ...quit the game
 
         if event.type == pygame.KEYDOWN:  
         # If any key is pressed down
@@ -48,14 +53,14 @@ while running:
     all_sprites.update()
 
     # Drawing everything on the screen
+    draw_field(screen)  
+    # Draw the field, goal, and lines on the screen (added goal in draw_field function)
     screen.fill(GREEN)  
     # Fill the screen with a green background color (to represent a soccer field)
     all_sprites.draw(screen)  
-    # Draw all sprites on top of the background (right now it is just the ball but there will be a goalie too)
+    # Draw all sprites on top of the background (right now it is just the ball and the goalie)
     pygame.display.flip()  
-    # updates all the graphics, without it you can't see anything on the scren
+    # updates all the graphics, without it you can't see anything on the screen
 
-   
     pygame.time.Clock().tick(60)
     # make it 60 fps
-    
