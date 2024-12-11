@@ -1,22 +1,25 @@
-# settings.py
-# Screen dimensions
+### settings.py
+# Constants for the game
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+FPS = 60
 
 # Colors
-GREEN = (0, 128, 0)   # Field background color
-WHITE = (255, 255, 255)  # Line color for field and goal
-BLACK = (0, 0, 0)  # For text
+GREEN = (34, 139, 34)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
-# Ball settings
+# Ball Settings
 BALL_RADIUS = 15
-BALL_SPEED = -10
+BALL_SPEED = -10  # Speed of the ball upwards
 
-# Goal dimensions
+# Goal Settings
 GOAL_WIDTH = 200
-GOAL_HEIGHT = 100
-GOAL_Y = 50  # Position of the goal from the top of the screen
+GOAL_HEIGHT = 50
+GOAL_Y = 100
 
-# Game settings
-FPS = 60
+# Goalie Settings
+GOALIE_SPEED = 5  # Speed of the goalie
+
+# Font
 FONT_SIZE = 36
