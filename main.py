@@ -1,141 +1,187 @@
 # Import necessary libraries for the game
-# 'pygame' manages graphics and input for the game
-# 'sys' handles system operations
 import pygame
 import sys
-from settings import *  # Import settings (screen size, colors, speeds)
-from sprites import *  # Import Ball and Goalie classes
 
-# Main Game class
-# Handles screen setup, scoring, and game logic
+# Import settings from a separate file
+# These include configurations like screen size, colors, and other constants
+from settings import *
+
+# Import custom sprite classes for the Ball and Goalie
+from sprites import *
+
+# Define the main Game class
+# This class handles the screen setup, scoring, and overall game logic
 class Game:
     def __init__(self):
-        # Initialize pygame
+        # Initialize pygame, which sets up the game engine
         pygame.init()
         
-        # Create game screen
-        # Dimensions defined in settings.py
+        # Create the game window with dimensions defined in the settings file
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         
-        # Set window title
+        # Set the title of the game window to "Soccer Penalty Shootout"
         pygame.display.set_caption("Soccer Penalty Shootout")
         
-        # Create clock to manage frame rate
+        # Create a clock object to manage the frame rate of the game
         self.clock = pygame.time.Clock()
         
-        # Setup font for score and messages
-        # Uses default font, size from settings
+        # Set up a font object to display text such as scores and messages
+        # The font is set to the default font with a size specified in the settings file
         self.font = pygame.font.Font(None, FONT_SIZE)
         
-        # Initialize score and shot tracking
-        self.score = 0  # Start with 0 goals
-        self.shots_taken = 0  # Start with 0 shots
-        self.max_shots = 5  # Limit to 5 shots per game
+        # Initialize the score counter, which starts at 0
+        self.score = 0
         
-        # Initialize game objects
+        # Initialize the shot counter, which starts at 0
+        self.shots_taken = 0
+        
+        # Set the maximum number of shots allowed in the game to 5
+        self.max_shots = 5
+        
+        # Call a method to initialize the game objects
         self.setup_sprites()
 
     def setup_sprites(self):
-        # Group for all game sprites
+        # Create a group to hold all game sprites for easier updates and rendering
         self.all_sprites = pygame.sprite.Group()
         
-        # Create Ball object
+        # Create an instance of the Ball class, which represents the soccer ball
         self.ball = Ball()
         
-        # Create Goalie object
+        # Create an instance of the Goalie class, which represents the goalie
         self.goalie = Goalie()
         
-        # Add Ball and Goalie to sprite group
+        # Add the Ball and Goalie objects to the sprite group for tracking and rendering
         self.all_sprites.add(self.ball, self.goalie)
 
     def check_goal(self):
-        # Only check if the ball has been kicked
+        # Only check for goals or saves if the ball has been kicked
         if not self.ball.shot:
             return
         
-        # Define goal area rectangle
+        # Create a rectangular area to represent the goal
         goal_rect = pygame.Rect(
-            (SCREEN_WIDTH - GOAL_WIDTH) // 2,  # Center horizontally
-            GOAL_Y,  # Top edge defined in settings
-            GOAL_WIDTH,  # Width defined in settings
-            GOAL_HEIGHT  # Height defined in settings
-        )
+            (SCREEN_WIDTH - GOAL_WIDTH) // 2, GOAL_Y, GOAL_WIDTH, GOAL_HEIGHT)
         
-        # Check if ball is near goal
+        # Center the goal horizontally
+        # Set the top edge of the goal based on a predefined constant
+        # Set the width of the goal based on a predefined constant
+        # Set the height of the goal based on a predefined constant
+
+        # Check if the ball has reached the area near the goal
         if self.ball.rect.centery <= GOAL_Y + GOAL_HEIGHT:
-            # Check collision with goalie
+            # Check if the ball collides with the goalie
             if pygame.sprite.collide_rect(self.ball, self.goalie):
-                print("Saved!")  # Ball blocked
-                self.ball.reset()  # Reset ball position
-            # Check if ball entered goal
+                # Print a message indicating the ball was saved by the goalie
+                print("Saved!")
+                
+                # Reset the ball to its original position and state
+                self.ball.reset()
+            # Check if the ball enters the goal area
             elif goal_rect.colliderect(self.ball.rect):
-                self.score += 1  # Increment score
-                print("You scored!")  # Display goal message
-                self.ball.reset()  # Reset ball position
+                # Increment the score by 1 for a successful goal
+                self.score += 1
+                
+                # Print a message indicating a goal was scored
+                print("You scored!")
+                
+                # Reset the ball to its original position and state
+                self.ball.reset()
 
     def draw_text(self):
-        # Render score display
+        # Render the score text to display the current score and shots taken
         score_text = self.font.render(f"Score: {self.score}/{self.max_shots}", True, BLACK)
-        # Display score in top-left corner
+        
+        # Display the score text in the top-left corner of the screen
         self.screen.blit(score_text, (10, 10))
         
-        # Show "Game Over" if all shots taken
+        # Check if the maximum number of shots has been taken
         if self.shots_taken >= self.max_shots:
+            # Render a "Game Over" message when the game ends
             game_over_text = self.font.render("Game Over!", True, BLACK)
-            # Center "Game Over" text on screen
+            
+            # Center the "Game Over" message on the screen
             self.screen.blit(game_over_text, 
                              (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, 
                               SCREEN_HEIGHT // 2))
             
-            # Show restart instructions
+            # Render instructions to restart the game
             restart_text = self.font.render("Press R to restart", True, BLACK)
+            
+            # Display the restart instructions below the "Game Over" message
             self.screen.blit(restart_text, 
                              (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, 
                               SCREEN_HEIGHT // 2 + 50))
 
     def reset_game(self):
-        # Reset score and shot counters
+        # Reset the score counter to 0
         self.score = 0
+        
+        # Reset the shots taken counter to 0
         self.shots_taken = 0
         
-        # Reset ball and goalie positions
+        # Reset the ball's position and state
         self.ball.reset()
+        
+        # Reset the goalie's position to its default state
         self.goalie.reset_position()
 
     def run(self):
-        # Main game loop
+        # Start the main game loop, which will continue running until the game is exited
         running = True
+        
         while running:
-            # Handle events (e.g., key presses, quit)
+            # Process all events, such as key presses or quitting the game
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:  # Window close event
+                # Check if the user has closed the game window
+                if event.type == pygame.QUIT:
+                    # Exit the game loop
                     return
-                if event.type == pygame.KEYDOWN:  # Key press event
-                    # Shoot ball on SPACE press (if shots available)
+                
+                # Check if a key was pressed
+                if event.type == pygame.KEYDOWN:
+                    # Check if the SPACE key was pressed to shoot the ball
                     if event.key == pygame.K_SPACE and self.shots_taken < self.max_shots:
+                        # Ensure the ball has not already been shot
                         if not self.ball.shot:
-                            self.ball.shoot()  # Shoot ball
-                            self.shots_taken += 1  # Increment shots counter
-                    # Restart game on R press (if game over)
+                            # Trigger the ball's shooting action
+                            self.ball.shoot()
+                            
+                            # Increment the number of shots taken
+                            self.shots_taken += 1
+                    # Check if the R key was pressed to restart the game
                     elif event.key == pygame.K_r and self.shots_taken >= self.max_shots:
+                        # Reset the game state to start a new game
                         self.reset_game()
 
-            # Update game objects
+            # Update the state of all game objects
             self.all_sprites.update()
-            self.check_goal()  # Check if goal was scored or blocked
             
-            # Draw game elements
-            draw_field(self.screen)  # Draw field background
-            self.all_sprites.draw(self.screen)  # Draw Ball and Goalie
-            self.draw_text()  # Display score and messages
+            # Check if the ball has scored a goal or been saved by the goalie
+            self.check_goal()
             
-            # Update display
+            # Draw the soccer field and all game elements on the screen
+            draw_field(self.screen)
+            
+            # Draw the Ball and Goalie objects on the screen
+            self.all_sprites.draw(self.screen)
+            
+            # Display the current score and messages on the screen
+            self.draw_text()
+            
+            # Update the display to show the latest frame
             pygame.display.flip()
-            # Limit frame rate
+            
+            # Limit the frame rate to the predefined frames per second (FPS) value
             self.clock.tick(FPS)
 
-# Run game if file is executed directly
+# Check if this file is being run directly (not imported)
 if __name__ == "__main__":
-    game = Game()  # Create Game object
-    game.run()  # Start game loop
-    pygame.quit()  # Quit pygame when finished
+    # Create an instance of the Game class
+    game = Game()
+    
+    # Start the game loop
+    game.run()
+    
+    # Quit pygame and clean up resources when the game ends
+    pygame.quit()
