@@ -55,63 +55,53 @@ class Game:
         self.all_sprites.add(self.ball, self.goalie)
 
     def check_goal(self):
-        # Only check for goals or saves if the ball has been kicked
         if not self.ball.shot:
             return
         
-        # Create a rectangular area to represent the goal
         goal_rect = pygame.Rect(
             (SCREEN_WIDTH - GOAL_WIDTH) // 2, GOAL_Y, GOAL_WIDTH, GOAL_HEIGHT)
-        
-        # Center the goal horizontally
-        # Set the top edge of the goal based on a predefined constant
-        # Set the width of the goal based on a predefined constant
-        # Set the height of the goal based on a predefined constant
 
-        # Check if the ball has reached the area near the goal
         if self.ball.rect.centery <= GOAL_Y + GOAL_HEIGHT:
-            # Check if the ball collides with the goalie
             if pygame.sprite.collide_rect(self.ball, self.goalie):
-                # Print a message indicating the ball was saved by the goalie
                 print("Saved!")
-                
-                # Reset the ball to its original position and state
-                self.ball.reset()
-            # Check if the ball enters the goal area
+                # Add bounce effect when ball hits goalie
+                self.ball.bounce_off_goalie(self.goalie)
             elif goal_rect.colliderect(self.ball.rect):
-                # Increment the score by 1 for a successful goal
                 self.score += 1
-                
-                # Print a message indicating a goal was scored
                 print("You scored!")
-                
-                # Reset the ball to its original position and state
                 self.ball.reset()
 
     def draw_text(self):
-        # Render the score text to display the current score and shots taken
-        score_text = self.font.render(f"Score: {self.score}/{self.max_shots}", True, BLACK)
-        
-        # Display the score text in the top-left corner of the screen
+        score_text = self.font.render(f"Score: {self.score}/{self.shots_taken}", True, BLACK)
+        # creates score display showing current score out of shots taken
         self.screen.blit(score_text, (10, 10))
+        # positions score in top-left
         
-        # Check if the maximum number of shots has been taken
-        if self.shots_taken >= self.max_shots:
-            # Render a "Game Over" message when the game ends
-            game_over_text = self.font.render("Game Over!", True, BLACK)
+        if self.shots_taken >= self.max_shots and not self.ball.shot:
+            # only show end game text after ball has completed its motion
+            if self.score == self.max_shots:
+                # perfect score condition
+                win_text = self.font.render("You Win! Perfect Score!", True, BLACK)
+                # creates win message
+                self.screen.blit(win_text, 
+                               (SCREEN_WIDTH // 2 - win_text.get_width() // 2, 
+                                SCREEN_HEIGHT // 2))
+                # centers win text
+            else:
+                # normal game over condition
+                game_over_text = self.font.render("Game Over!", True, BLACK)
+                # creates game over message
+                self.screen.blit(game_over_text, 
+                               (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, 
+                                SCREEN_HEIGHT // 2))
+                # centers game over text
             
-            # Center the "Game Over" message on the screen
-            self.screen.blit(game_over_text, 
-                             (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, 
-                              SCREEN_HEIGHT // 2))
-            
-            # Render instructions to restart the game
             restart_text = self.font.render("Press R to restart", True, BLACK)
-            
-            # Display the restart instructions below the "Game Over" message
+            # creates restart instruction
             self.screen.blit(restart_text, 
-                             (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, 
-                              SCREEN_HEIGHT // 2 + 50))
+                           (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, 
+                            SCREEN_HEIGHT // 2 + 50))
+            # positions restart text below game over
 
     def reset_game(self):
         # Reset the score counter to 0
@@ -185,3 +175,4 @@ if __name__ == "__main__":
     
     # Quit pygame and clean up resources when the game ends
     pygame.quit()
+    
