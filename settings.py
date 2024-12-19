@@ -1,5 +1,3 @@
-### settings.py
-# Constants for the game
 SCREEN_WIDTH = 800
 # width of game window in pixels
 SCREEN_HEIGHT = 600

@@ -1,4 +1,3 @@
-### sprites.py
 import pygame
 # imports pygame library for game development
 from settings import *
@@ -8,27 +7,21 @@ class Ball(pygame.sprite.Sprite):
     # inherits from pygame's Sprite class
     # handles ball movement, shooting, bouncing mechanics
     
+
+    #Made by ChatGPT: intended to change sprite icons
     def __init__(self):
         super().__init__()
         # initializes parent Sprite class
         
         try:
             original_image = pygame.image.load("assets/ball.png").convert_alpha()
-            # attempts to load ball image from assets folder
-            # convert_alpha() optimizes image for transparency
-            
-            self.image = pygame.transform.scale(original_image, 
-                (BALL_RADIUS * 2, BALL_RADIUS * 2))
-            # scales loaded image to match ball size
-            # uses BALL_RADIUS * 2 for diameter
-        except:
+            self.image = pygame.transform.scale(original_image, (BALL_RADIUS * 3, BALL_RADIUS * 3))
+
+        except Exception as e:
+            print(f"Error loading ball image: {e}")
             self.image = pygame.Surface((BALL_RADIUS * 2, BALL_RADIUS * 2), pygame.SRCALPHA)
-            # creates transparent surface if image load fails
-            # SRCALPHA enables transparency
-            
             pygame.draw.circle(self.image, WHITE, (BALL_RADIUS, BALL_RADIUS), BALL_RADIUS)
-            # draws white circle as fallback
-            # positions circle in center of surface
+
         
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
         # creates rectangle for collision detection
